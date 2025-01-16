@@ -1,0 +1,56 @@
+
+# Instalar e carregar as bibliotecas necessárias
+install.packages("readxl")
+install.packages("plotly")
+
+library(readxl)
+library(plotly)
+
+
+# Load the data from the Excel file
+file_path <-"C:\\Users\\rodrigo.pereira\\Documents\\PROADI\\CCP\\Dados CCP\\Dados Caracteristicas cursos.xlsx"
+data <- read_excel(file_path)
+
+# Inspect the data
+print(head(data))
+str(data)
+
+# Prepare the data for the sunburst chart
+graphdata <- data.frame(
+  ids = data$Ids,
+  labels = data$labels,
+  parents = data$parents,
+  values = data$values,
+  stringsAsFactors = TRUE
+)
+
+# Verify the structure of the data frame
+print(head(graphdata))
+str(graphdata)
+
+# Create the sunburst chart
+sbgraph <- plot_ly(data = graphdata, 
+               ids = ~ids, 
+               labels = ~labels, 
+               parents = ~parents, 
+               values = ~values, 
+               type = 'sunburst',
+               insidetextorientation = 'tangential',  # Change text orientation to horizontal
+               textinfo = 'label'
+               )
+
+# Customize layout (optional)
+sbgraph <- sbgraph %>% layout(
+  title = "Main characteristics of courses included",
+  font = list(size = 10)  # Adjust overall font size (including title) if needed
+)
+
+# Display the chart
+sbgraph
+
+
+htmlwidgets::saveWidget(fig, "sunburstgraph.html")
+
+p <- plot_ly(x = ~rnorm(50), type = "sunburst")
+
+htmlwidgets::saveWidget(p, "sunburst.html")
